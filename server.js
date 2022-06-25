@@ -116,9 +116,33 @@ app.post("/getfile", (req, res, next) => {
       return next(err);
     });
 });
+
+
+app.get("/aggregate", (req, res) => {
+  User.aggregate([{
+    $lookup: {
+      from: "city",
+      localField: "username",
+      foreignField: "username",
+      as: "combined_copy"
+    }
+  }]).then((res1,err)=>{
+    if(err){
+      console.log(err);
+    }
+    else{
+      console.log(res1);
+      res.send(res1)
+    }
+  })
+});
+
+
 app.get("/user", (req, res) => {
   res.send(req.user);
 });
+
+
 
 app.listen(4000, () => {
   console.log("Server Has Started");
